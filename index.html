@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>报价计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            padding: 10px;
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+            align-items: flex-start; /* 左对齐 */
+            height: 100vh; /* 设置为视口高度 */
+            overflow: hidden; /* 防止出现滚动条 */
+            position: relative; /* 允许使用绝对定位 */
+        }
+        .calculator {
+            width: 100%; /* 100% 宽度 */
+            max-width: 350px; /* 最大宽度 350px */
+            margin: 10px 0; /* 上下间距 */
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            font-size: 14px; /* 调整输入框字体大小 */
+        }
+        .result {
+            margin-top: 10px; /* 间距设置 */
+            font-size: 1.5em; /* 增大结果字体大小 */
+            color: #333;
+            width: 100%; /* 使结果标签占满宽度 */
+            text-align: center; /* 中心对齐 */
+        }
+        .total-sale {
+            color: red; /* 售价字体颜色设置为红色 */
+            font-weight: bold; /* 加粗 */
+        }
+        button {
+            margin-top: 10px; /* 上间距 */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745; /* 按钮背景色 */
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%; /* 设置宽度为100% */
+        }
+        button:hover {
+            background-color: #218838; /* 按钮悬停效果 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <label for="price">单价 (CNY):</label>
+        <input type="number" id="price" step="0.001" placeholder="输入单价" onfocus="clearInput('price')" oninput="handleInputChange('unit')">
+
+        <label for="weight">单重 (g):</label>
+        <input type="number" id="weight" step="0.1" placeholder="输入单重" onfocus="clearInput('weight')" oninput="handleInputChange('unit')">
+
+        <label for="quantity">数量:</label>
+        <input type="number" id="quantity" value="1" min="1" oninput="handleInputChange('unit')"> <!-- 默认数量为1 -->
+    </div>
+
+    <div class="result">
+        <span>售价 (USD): <span id="totalSale" class="total-sale">0.00</span></span>
+    </div>
+
+    <script>
+        let feeRate = 0.06;    // 固定手续费率
+        let profitRate = 0.35; // 默认利润率
+        let exchangeRate = 7;  // 默认汇率
+
+        function clearInput(inputId) {
+            document.getElementById(inputId).value = ''; // 清空输入框
+        }
+
+        function handleInputChange(type) {
+            if (type === 'unit') {
+                calculate();
+            }
+        }
+
+        function calculate() {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 1; // 默认数量为 1
+
+            let totalSale = 0;
+
+            // 计算
+            if (quantity > 0 && weight > 0) {
+                const cost = price * quantity;
+                const logistics = (weight / 1000) * 80; // 每公斤物流费 80 元（可以调整）
+                const totalCost = cost + logistics;
+                totalSale = (totalCost * (1 + profitRate) * (1 + feeRate)) / exchangeRate;
+            }
+
+            document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(2) : '0.00';
+        }
+
+        // 初始化计算
+        window.onload = calculate;
+    </script>
+</body>
+</html>
