@@ -30,7 +30,7 @@
             margin-top: 5px;
             font-size: 14px;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -67,6 +67,13 @@
 <body>
 
     <div class="calculator">
+        <label for="channel">渠道:</label>
+        <select id="channel" onchange="handleInputChange('unit')">
+            <option value="normal">普货</option>
+            <option value="battery">带电</option>
+            <option value="cosmetics">化妆</option>
+        </select>
+
         <label for="price">单价 (CNY):</label>
         <input type="number" id="price" step="0.001" placeholder="输入单价" onfocus="clearInput('price')" oninput="handleInputChange('unit')">
 
@@ -100,13 +107,26 @@
             const price = parseFloat(document.getElementById('price').value) || 0;
             const weight = parseFloat(document.getElementById('weight').value) || 0;
             const quantity = parseInt(document.getElementById('quantity').value) || 1; // 默认数量为 1
+            const channel = document.getElementById('channel').value; // 获取所选渠道
+
+            let shippingCost;
+            switch (channel) {
+                case 'battery':
+                    shippingCost = 100; // 带电渠道运费
+                    break;
+                case 'cosmetics':
+                    shippingCost = 115; // 化妆渠道运费
+                    break;
+                default:
+                    shippingCost = 80; // 普货渠道运费
+            }
 
             let totalSale = 0;
 
             // 计算
             if (quantity > 0 && weight > 0) {
                 const cost = price * quantity;
-                const logistics = (weight * quantity / 1000) * 80; // 每公斤物流费 80 元（可以调整）
+                const logistics = (weight * quantity / 1000) * shippingCost; // 根据渠道选择运费
                 const totalCost = cost + logistics;
                 totalSale = (totalCost * (1 + profitRate) * (1 + feeRate)) / exchangeRate;
             }
