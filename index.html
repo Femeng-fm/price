@@ -106,7 +106,7 @@
             // 计算
             if (quantity > 0 && weight > 0) {
                 const cost = price * quantity;
-                const logistics = (weight / 1000) * 80; // 每公斤物流费 80 元（可以调整）
+                const logistics = (weight * quantity / 1000) * 80; // 每公斤物流费 80 元（可以调整）
                 const totalCost = cost + logistics;
                 totalSale = (totalCost * (1 + profitRate) * (1 + feeRate)) / exchangeRate;
             }
