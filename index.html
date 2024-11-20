@@ -10,16 +10,16 @@
             background-color: #f3f3f3;
             padding: 10px;
             display: flex;
-            flex-direction: column; /* 垂直布局 */
-            align-items: flex-start; /* 左对齐 */
-            height: 100vh; /* 设置为视口高度 */
-            overflow: hidden; /* 防止出现滚动条 */
-            position: relative; /* 允许使用绝对定位 */
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
         }
         .calculator {
-            width: 100%; /* 100% 宽度 */
-            max-width: 350px; /* 最大宽度 350px */
-            margin: 10px 0; /* 上下间距 */
+            width: 100%;
+            max-width: 350px;
+            margin: 10px 0;
             padding: 10px;
             background-color: #fff;
             border-radius: 10px;
@@ -35,32 +35,32 @@
             padding: 8px;
             margin-top: 5px;
             box-sizing: border-box;
-            font-size: 14px; /* 调整输入框字体大小 */
+            font-size: 14px;
         }
         .result {
-            margin-top: 10px; /* 间距设置 */
-            font-size: 1.5em; /* 增大结果字体大小 */
+            margin-top: 20px;
+            font-size: 2em; /* 调整为更大的字体 */
             color: #333;
-            width: 100%; /* 使结果标签占满宽度 */
-            text-align: center; /* 中心对齐 */
+            width: 100%;
+            text-align: center;
         }
         .total-sale {
-            color: red; /* 售价字体颜色设置为红色 */
-            font-weight: bold; /* 加粗 */
+            color: red;
+            font-weight: bold;
         }
         button {
-            margin-top: 10px; /* 上间距 */
+            margin-top: 10px;
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background-color: #28a745; /* 按钮背景色 */
+            background-color: #28a745;
             color: white;
             font-size: 14px;
             cursor: pointer;
-            width: 100%; /* 设置宽度为100% */
+            width: 100%;
         }
         button:hover {
-            background-color: #218838; /* 按钮悬停效果 */
+            background-color: #218838;
         }
     </style>
 </head>
@@ -68,46 +68,62 @@
 
     <div class="calculator">
         <label for="channel">渠道:</label>
-        <select id="channel" onchange="handleInputChange('unit')">
+        <select id="channel" onchange="handleInputChange()">
             <option value="normal">普货</option>
             <option value="battery">带电</option>
             <option value="cosmetics">化妆</option>
         </select>
 
-        <label for="price">单价 (CNY):</label>
-        <input type="number" id="price" step="0.001" placeholder="输入单价" onfocus="clearInput('price')" oninput="handleInputChange('unit')">
+        <label for="unitPrice">单价 (CNY):</label>
+        <input type="number" id="unitPrice" step="0.001" placeholder="输入单价" onfocus="clearInput('unitPrice')" oninput="updateTotalPrice()">
 
-        <label for="weight">单重 (g):</label>
-        <input type="number" id="weight" step="0.1" placeholder="输入单重" onfocus="clearInput('weight')" oninput="handleInputChange('unit')">
+        <label for="amount">数量:</label>
+        <input type="number" id="amount" value="1" min="1" onfocus="clearInput('amount')" oninput="updateTotalPrice()">
 
-        <label for="quantity">数量:</label>
-        <input type="number" id="quantity" value="1" min="1" oninput="handleInputChange('unit')"> <!-- 默认数量为1 -->
+        <label for="totalPrice">总价 (CNY):</label>
+        <input type="number" id="totalPrice" step="0.01" placeholder="输入总价" onfocus="clearInput('totalPrice')" oninput="handleInputChange()">
+
+        <label for="weight">重重 (g):</label>
+        <input type="number" id="weight" step="0.1" placeholder="输入单重" onfocus="clearInput('weight')" oninput="handleInputChange()">
+
+        <label for="quantity">集合数量:</label>
+        <input type="number" id="quantity" value="1" min="1" onfocus="clearInput('quantity')" oninput="handleInputChange()">
     </div>
 
     <div class="result">
-        <span>售价 (USD): <span id="totalSale" class="total-sale">0.00</span></span>
+        <span>销售额 (USD): <span id="totalSale" class="total-sale">0.00</span></span>
     </div>
 
     <script>
         let feeRate = 0.06;    // 固定手续费率
-        let profitRate = 0.40; // 默认利润率
+        let profitRate = 0.38; // 默认利润率
         let exchangeRate = 7;  // 默认汇率
 
         function clearInput(inputId) {
             document.getElementById(inputId).value = ''; // 清空输入框
         }
 
-        function handleInputChange(type) {
-            if (type === 'unit') {
-                calculate();
+        function updateTotalPrice() {
+            const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+            const amount = parseInt(document.getElementById('amount').value) || 0;
+
+            // 自动计算总价并更新
+            if (unitPrice > 0 && amount > 0) {
+                document.getElementById('totalPrice').value = (unitPrice * amount).toFixed(2);
             }
+
+            handleInputChange();
+        }
+
+        function handleInputChange() {
+            calculate();
         }
 
         function calculate() {
-            const price = parseFloat(document.getElementById('price').value) || 0;
+            const totalPrice = parseFloat(document.getElementById('totalPrice').value) || 0;
             const weight = parseFloat(document.getElementById('weight').value) || 0;
-            const quantity = parseInt(document.getElementById('quantity').value) || 1; // 默认数量为 1
-            const channel = document.getElementById('channel').value; // 获取所选渠道
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const channel = document.getElementById('channel').value;
 
             let shippingCost;
             switch (channel) {
@@ -123,11 +139,9 @@
 
             let totalSale = 0;
 
-            // 计算
-            if (quantity > 0 && weight > 0) {
-                const cost = price * quantity;
-                const logistics = (weight * quantity / 1000) * shippingCost; // 根据渠道选择运费
-                const totalCost = cost + logistics;
+            if (quantity > 0 && totalPrice > 0) {
+                const logistics = (weight * quantity / 1000) * shippingCost;
+                const totalCost = totalPrice + logistics;
                 totalSale = (totalCost * (1 + profitRate) * (1 + feeRate)) / exchangeRate;
             }
 
@@ -135,7 +149,7 @@
         }
 
         // 初始化计算
-        window.onload = calculate;
+        window.onload = updateTotalPrice;
     </script>
 </body>
 </html>
