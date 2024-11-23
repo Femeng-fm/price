@@ -96,7 +96,7 @@
 
     <script>
         let feeRate = 0.06;    // 固定手续费率
-        let profitRate = 0.38; // 默认利润率
+        let profitRate = 0.40; // 默认利润率
         let exchangeRate = 7;  // 默认汇率
 
         function clearInput(inputId) {
@@ -128,13 +128,13 @@
             let shippingCost;
             switch (channel) {
                 case 'battery':
-                    shippingCost = 110; // 带电渠道运费
+                    shippingCost = 115; // 带电渠道运费
                     break;
                 case 'cosmetics':
-                    shippingCost = 125; // 化妆渠道运费
+                    shippingCost = 130; // 化妆渠道运费
                     break;
                 default:
-                    shippingCost = 90; // 普货渠道运费
+                    shippingCost = 95; // 普货渠道运费
             }
 
             let totalSale = 0;
