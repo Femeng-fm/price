@@ -96,7 +96,7 @@
 
     <script>
         let feeRate = 0.06;    // 固定手续费率
-        let profitRate = 0.40; // 默认利润率
+        let profitRate = 0.35; // 默认利润率
         let exchangeRate = 7;  // 默认汇率
 
         function clearInput(inputId) {
@@ -134,7 +134,7 @@
                     shippingCost = 130; // 化妆渠道运费
                     break;
                 default:
-                    shippingCost = 95; // 普货渠道运费
+                    shippingCost = 91; // 普货渠道运费
             }
 
             let totalSale = 0;
@@ -142,7 +142,7 @@
             if (quantity > 0 && totalPrice > 0) {
                 const logistics = (weight * quantity / 1000) * shippingCost;
                 const totalCost = totalPrice * quantity + logistics;
-                totalSale = (totalCost * (1 + profitRate) * (1 + feeRate)) / exchangeRate;
+                totalSale = totalCost * (1 + feeRate)) / exchangeRate/(1 - profitRate );
             }
 
             document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(2) : '0.00';
