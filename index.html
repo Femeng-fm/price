@@ -145,7 +145,7 @@
                 totalSale = totalCost * (1 + feeRate) / (exchangeRate*(1 - profitRate));
             }
             const roundedSale = Math.ceil(totalSale);
-            document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(2) : '0.0';
+            document.getElementById('totalSale').textContent = roundedSale ? roundedSale : '0';
         }
 
         // 初始化计算
