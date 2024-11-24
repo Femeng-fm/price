@@ -144,8 +144,8 @@
                 const totalCost = totalPrice * quantity + logistics;
                 totalSale = totalCost * (1 + feeRate) / (exchangeRate*(1 - profitRate));
             }
-
-            document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(2) : '0.00';
+            const roundedSale = Math.ceil(totalSale);
+            document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(2) : '0.0';
         }
 
         // 初始化计算
