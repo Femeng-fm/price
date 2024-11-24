@@ -142,7 +142,9 @@
             if (quantity > 0 && totalPrice > 0) {
                 const logistics = (weight * quantity / 1000) * shippingCost;
                 const totalCost = totalPrice * quantity + logistics;
-                totalSale = totalCost * (1 + feeRate) / (exchangeRate*(1 - profitRate));
+                totalSale = totalCost / ((1 - profitRate) * exchangeRate);
+                // 考虑手续费
+                totalSale = totalSale / (1 - feeRate);
             }
             const roundedSale = Math.ceil(totalSale);
             document.getElementById('totalSale').textContent = roundedSale ? roundedSale : '0';
