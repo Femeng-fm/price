@@ -39,7 +39,7 @@
         }
         .result {
             margin-top: 20px;
-            font-size: 2em; /* 调整为更大的字体 */
+            font-size: 2em;
             color: #333;
             width: 100%;
             text-align: center;
@@ -74,6 +74,17 @@
             <option value="cosmetics">化妆</option>
         </select>
 
+        <label for="profitRate">净利润率:</label>
+        <select id="profitRate" onchange="handleInputChange()">
+            <option value="0.25">25%</option>
+            <option value="0.30" selected>30%</option>
+            <option value="0.35">35%</option>
+            <option value="0.40">40%</option>
+            <option value="0.50">50%</option>
+            <option value="0.60">60%</option>
+            <option value="0.70">70%</option>
+        </select>
+
         <label for="unitPrice">单价 (CNY):</label>
         <input type="number" id="unitPrice" step="0.001" placeholder="输入单价" onfocus="clearInput('unitPrice')" oninput="updateTotalPrice()">
 
@@ -96,7 +107,6 @@
 
     <script>
         let feeRate = 0.06;    // 固定手续费率
-        let profitRate = 0.30; // 默认利润率
         let exchangeRate = 7;  // 默认汇率
 
         function clearInput(inputId) {
@@ -107,7 +117,6 @@
             const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
             const amount = parseInt(document.getElementById('amount').value) || 0;
 
-            // 自动计算总价并更新
             if (unitPrice > 0 && amount > 0) {
                 document.getElementById('totalPrice').value = (unitPrice * amount).toFixed(2);
             }
@@ -124,17 +133,18 @@
             const weight = parseFloat(document.getElementById('weight').value) || 0;
             const quantity = parseInt(document.getElementById('quantity').value) || 1;
             const channel = document.getElementById('channel').value;
+            const profitRate = parseFloat(document.getElementById('profitRate').value) || 0.30; // 默认30%
 
             let shippingCost;
             switch (channel) {
                 case 'battery':
-                    shippingCost = 115; // 带电渠道运费
+                    shippingCost = 120;
                     break;
                 case 'cosmetics':
-                    shippingCost = 130; // 化妆渠道运费
+                    shippingCost = 140;
                     break;
                 default:
-                    shippingCost = 95; // 普货渠道运费
+                    shippingCost = 105;
             }
 
             let totalSale = 0;
@@ -143,14 +153,12 @@
                 const logistics = (weight * quantity / 1000) * shippingCost;
                 const totalCost = totalPrice * quantity + logistics;
                 totalSale = totalCost / ((1 - profitRate) * exchangeRate);
-                // 考虑手续费
                 totalSale = totalSale / (1 - feeRate);
             }
             const roundedSale = Math.ceil(totalSale);
             document.getElementById('totalSale').textContent = roundedSale ? roundedSale : '0';
         }
 
-        // 初始化计算
         window.onload = updateTotalPrice;
     </script>
 </body>
