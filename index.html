@@ -76,20 +76,22 @@
 
         <label for="profitRate">Rate:</label>
         <select id="profitRate" onchange="handleInputChange()">
-            <option value="0.25">25%</option>
+            <option value="0.20">20</option>
+            <option value="0.25">25</option>
             <option value="0.30" selected>30%</option>
-            <option value="0.35">35%</option>
-            <option value="0.40">40%</option>
-            <option value="0.50">50%</option>
-            <option value="0.60">60%</option>
-            <option value="0.70">70%</option>
+            <option value="0.35">35</option>
+            <option value="0.40">40</option>
+            <option value="0.50">50</option>
+            <option value="0.60">60</option>
+            <option value="0.70">70</option>
+            <option value="1">70</option>
         </select>
 
         <label for="unitPrice">单价 (CNY):</label>
         <input type="number" id="unitPrice" step="0.001" placeholder="输入单价" onfocus="clearInput('unitPrice')" oninput="updateTotalPrice()">
 
         <label for="amount">数量:</label>
-        <input type="number" id="amount" value="100" min="1" onfocus="clearInput('amount')" oninput="updateTotalPrice()">
+        <input type="number" id="amount" value="" min="1" onfocus="clearInput('amount')" oninput="updateTotalPrice()">
 
         <label for="totalPrice">总价 (CNY):</label>
         <input type="number" id="totalPrice" step="0.01" placeholder="输入总价" onfocus="clearInput('totalPrice')" oninput="handleInputChange()">
