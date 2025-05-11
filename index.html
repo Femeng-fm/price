@@ -62,17 +62,24 @@
         button:hover {
             background-color: #218838;
         }
+        #customShipping {
+            display: none;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div class="calculator">
         <label for="channel">渠道:</label>
-        <select id="channel" onchange="handleInputChange()">
+        <select id="channel" onchange="handleChannelChange()">
             <option value="normal">普货</option>
             <option value="battery">带电</option>
             <option value="cosmetics">化妆</option>
+            <option value="custom">自定义</option>
         </select>
+        
+        <input type="number" id="customShipping" placeholder="输入运费单价" oninput="handleInputChange()">
 
         <label for="profitRate">Rate:</label>
         <select id="profitRate" onchange="handleInputChange()">
@@ -115,6 +122,20 @@
             document.getElementById(inputId).value = ''; // 清空输入框
         }
 
+        function handleChannelChange() {
+            const channel = document.getElementById('channel').value;
+            const customShippingInput = document.getElementById('customShipping');
+            
+            if (channel === 'custom') {
+                customShippingInput.style.display = 'block';
+                customShippingInput.value = ''; // 清空自定义值
+            } else {
+                customShippingInput.style.display = 'none';
+            }
+            
+            handleInputChange();
+        }
+
         function updateTotalPrice() {
             const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
             const amount = parseInt(document.getElementById('amount').value) || 0;
@@ -136,32 +157,46 @@
             const quantity = parseInt(document.getElementById('quantity').value) || 1;
             const channel = document.getElementById('channel').value;
             const profitRate = parseFloat(document.getElementById('profitRate').value) || 0.30; // 默认30%
-
+            
             let shippingCost;
-            switch (channel) {
-                case 'battery':
-                    shippingCost = 105;
-                    break;
-                case 'cosmetics':
-                    shippingCost = 140;
-                    break;
-                default:
-                    shippingCost = 130;
+            if (channel === 'custom') {
+                shippingCost = parseFloat(document.getElementById('customShipping').value) || 0;
+            } else {
+                switch (channel) {
+                    case 'battery':
+                        shippingCost = 105;
+                        break;
+                    case 'cosmetics':
+                        shippingCost = 140;
+                        break;
+                    default:
+                        shippingCost = 130;
+                }
             }
 
             let totalSale = 0;
 
-            if (quantity > 0 && totalPrice > 0) {
+            if (quantity > 0 && totalPrice > 0 && shippingCost > 0) {
                 const logistics = (weight * quantity / 1000) * shippingCost;
                 const totalCost = totalPrice * quantity + logistics;
                 totalSale = totalCost / ((1 - profitRate) * exchangeRate);
                 totalSale = totalSale / (1 - feeRate);
+                
+                // 优化显示逻辑：大于5取整，小于5保留1位小数
+                if (totalSale >= 5) {
+                    totalSale = Math.ceil(totalSale);
+                } else {
+                    totalSale = Math.round(totalSale * 10) / 10; // 保留1位小数
+                }
             }
-            const roundedSale = Math.ceil(totalSale);
-            document.getElementById('totalSale').textContent = roundedSale ? roundedSale : '0';
+            
+            document.getElementById('totalSale').textContent = totalSale ? totalSale.toFixed(totalSale >= 5 ? 0 : 1) : '0.00';
         }
 
-        window.onload = updateTotalPrice;
+        window.onload = function() {
+            updateTotalPrice();
+            handleChannelChange(); // 初始化时处理渠道选择
+        };
     </script>
 </body>
 </html>
