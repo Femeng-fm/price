@@ -74,8 +74,8 @@
         <label for="channel">渠道:</label>
         <select id="channel" onchange="handleChannelChange()">
             <option value="normal">普货</option>
-            <option value="battery">带电</option>
-            <option value="cosmetics">化妆</option>
+            <option value="battery">珠子</option>
+            <option value="cosmetics">带电</option>
             <option value="custom">自定义</option>
         </select>
         
@@ -115,7 +115,7 @@
     </div>
 
     <script>
-        let feeRate = 0.08;    // 固定手续费率
+        let feeRate = 0.06;    // 固定手续费率
         let exchangeRate = 7;  // 默认汇率
 
         function clearInput(inputId) {
@@ -164,13 +164,13 @@
             } else {
                 switch (channel) {
                     case 'battery':
-                        shippingCost = 105;
+                        shippingCost = 80;
                         break;
                     case 'cosmetics':
-                        shippingCost = 140;
+                        shippingCost = 120;
                         break;
                     default:
-                        shippingCost = 130;
+                        shippingCost = 120;
                 }
             }
 
