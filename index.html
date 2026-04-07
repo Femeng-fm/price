@@ -73,25 +73,24 @@
     <div class="calculator">
         <label for="channel">渠道:</label>
         <select id="channel" onchange="handleChannelChange()">
-            <option value="normal">普货</option>
-            <option value="battery">珠子</option>
-            <option value="cosmetics">带电</option>
+            <option value="normal">普</option>
+            <option value="battery">电</option>
+            <option value="cosmetics">液</option>
             <option value="custom">自定义</option>
         </select>
         
         <input type="number" id="customShipping" placeholder="输入运费单价" oninput="handleInputChange()">
 
-        <label for="profitRate">Rate:</label>
+        <label for="profitRate">R:</label>
         <select id="profitRate" onchange="handleInputChange()">
-            <option value="0.20">20</option>
-            <option value="0.25">25</option>
-            <option value="0.30" selected>30</option>
-            <option value="0.35">35</option>
-            <option value="0.40">40</option>
-            <option value="0.50">50</option>
-            <option value="0.60">60</option>
-            <option value="0.70">70</option>
-            <option value="1">100</option>
+            <option value="0.20">1</option>
+            <option value="0.25">2</option>
+            <option value="0.30" selected>3</option>
+            <option value="0.4">4</option>
+            <option value="0.50">5</option>
+            <option value="0.60">6</option>
+            <option value="0.70">7</option>
+            <option value="1">10</option>
         </select>
 
         <label for="unitPrice">单价 (CNY):</label>
@@ -164,7 +163,7 @@
             } else {
                 switch (channel) {
                     case 'battery':
-                        shippingCost = 90;
+                        shippingCost = 120;
                         break;
                     case 'cosmetics':
                         shippingCost = 130;
